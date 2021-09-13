@@ -14,12 +14,13 @@
 
 */
 
+#define _FILE_OFFSET_BITS 64  
 
 #include <stdio.h>
 #include <string>
 #include <windows.h>
 
-#define _FILE_OFFSET_BITS 64  
+
 
 #define MY_ALIGN(n) __attribute__ ((aligned(n)))
 #define MY_NO_INLINE __attribute__((noinline))
@@ -431,8 +432,9 @@ std::string sha1_calc_file(const char * i_filename)
 	
 	float	tempo=(end-start+1)/1000.0;
 	int64_t dimensione=prendidimensionefile(i_filename);
-	int64_t	velocita=dimensione/tempo;
-	printf("Time %f %s /s\n",tempo,migliaia(velocita));
+	printf("Size  %s\n",migliaia(dimensione));
+	double	velocita=dimensione/tempo;
+	printf("Time %f speed %s\n",tempo,migliaia(velocita));
 	
 	char sha1result[20];
 	Sha1_Final	(&myhasher,(Byte*)sha1result);
@@ -445,11 +447,8 @@ int main(int argc, char *argv[])
 	OK this is very quick and dirty.
 	The sorter, the better
 	*/
-	char command;
-	if (argc>=2)
-		command=argv[1][0];
 		
-	if ((argc!=3) || (command!='h') && (command!='s'))
+	if (argc<3)
 	{
 		printf("Ugo 2 HW-SHA-1 hasher - by Franco Corbelli\n");
 		printf("Two parameters: h or s and a file\n");
@@ -457,6 +456,8 @@ int main(int argc, char *argv[])
 		printf("ex. ugo s z:\\1.txt   (software-based SHA-1)\n");
 		return 1;
 	}
+	
+	char command=argv[1][0];
 	
 	Sha1Prepare(command=='h');
 	printf("Hashing %s\n",argv[2]);
